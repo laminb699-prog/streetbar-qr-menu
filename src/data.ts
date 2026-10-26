@@ -4,6 +4,7 @@ export type Product = {
   name: string;
   price: number;
   image: string;
+  hasPhoto: boolean;
 };
 
 export type Category = {
@@ -18,6 +19,10 @@ export const PHONE = "212713809797";
 export const WHATSAPP_URL = "https://wa.me/212713809797";
 export const ADDRESS = "Boulevard Al Masjid, in front of Al Jazira Store, Dakhla, Morocco";
 
+// Flat delivery fee in DH added to the total when the customer picks "Livraison".
+// Leave at 0 to hide it; the customer is then told the fee is confirmed on WhatsApp.
+export const DELIVERY_FEE = 0;
+
 // Each product looks for a photo file matching its filename in
 // src/assets/menu/items/, and each category looks for a photo matching
 // its id directly in src/assets/menu/. Any image extension works, and a
@@ -30,6 +35,7 @@ const products = (
     name,
     price,
     image: resolveItemImage(filename, fallbackImage),
+    hasPhoto: resolveItemImage(filename, "") !== "",
   }));
 
 export const categories: Category[] = [

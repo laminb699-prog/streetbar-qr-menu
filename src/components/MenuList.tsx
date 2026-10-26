@@ -6,76 +6,83 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { useScrollSpy, useBodyScrollLock } from "../hooks/useReveal";
 
 type LightboxState = { image: string; name: string } | null;
+type OpenPhoto = (image: string, name: string) => void;
 
-function ItemRow({
-  categoryId,
-  name,
-  price,
-  image,
-  onOpenPhoto,
-}: {
-  categoryId: string;
-  name: string;
-  price: number;
-  image: string;
-  onOpenPhoto: (image: string, name: string) => void;
-}) {
+function Qty({ itemKey, name, price, image }: { itemKey: string; name: string; price: number; image: string }) {
   const { addItem, setQuantity, quantityFor } = useCart();
   const { t } = useLanguage();
-  const key = `${categoryId}__${name}`;
-  const qty = quantityFor(key);
+  const qty = quantityFor(itemKey);
 
+  if (qty === 0) {
+    return (
+      <button
+        onClick={() => addItem({ key: itemKey, name, price, image })}
+        aria-label={`${t.menu.add}: ${name}`}
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-plum-600 text-white shadow-md transition-transform active:scale-95 hover:bg-plum-700"
+      >
+        <Plus className="h-5 w-5" />
+      </button>
+    );
+  }
   return (
-    <li className="flex items-center gap-4 py-3.5">
+    <div className="flex shrink-0 items-center gap-1 rounded-full bg-plum-100 p-1">
+      <button
+        onClick={() => setQuantity(itemKey, qty - 1)}
+        aria-label={`${name}: −`}
+        className="grid h-8 w-8 place-items-center rounded-full bg-plum-600 text-white active:scale-95"
+      >
+        <Minus className="h-4 w-4" />
+      </button>
+      <span className="w-6 text-center text-sm font-bold tabular-nums" aria-live="polite">
+        {qty}
+      </span>
+      <button
+        onClick={() => setQuantity(itemKey, qty + 1)}
+        aria-label={`${name}: +`}
+        className="grid h-8 w-8 place-items-center rounded-full bg-plum-600 text-white active:scale-95"
+      >
+        <Plus className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+function PhotoCard({
+  categoryId, name, price, image, onOpenPhoto,
+}: { categoryId: string; name: string; price: number; image: string; onOpenPhoto: OpenPhoto }) {
+  return (
+    <li className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_8px_24px_-12px_rgba(87,26,134,0.35)] ring-1 ring-plum-100">
       <button
         onClick={() => onOpenPhoto(image, name)}
         aria-label={`${name}: view photo`}
-        className="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400"
+        className="relative block aspect-square w-full overflow-hidden bg-plum-100"
       >
-        <img
-          src={image}
-          alt=""
-          loading="lazy"
-          width={72}
-          height={72}
-          className="h-full w-full object-cover"
-        />
+        <img src={image} alt="" loading="lazy" className="h-full w-full object-cover" />
+        <span className="absolute bottom-2 end-2 rounded-full bg-plum-700 px-3 py-1 text-sm font-bold text-white shadow">
+          <bdi>{price} DH</bdi>
+        </span>
       </button>
-
-      <div className="min-w-0 flex-1">
-        <p className="font-display text-base font-semibold leading-snug">{name}</p>
-        <p className="mt-0.5 text-sm font-semibold text-gold-300"><bdi>{price} MAD</bdi></p>
+      <div className="flex flex-1 items-center justify-between gap-2 p-3">
+        <p className="min-w-0 text-sm font-semibold leading-snug">{name}</p>
+        <Qty itemKey={`${categoryId}__${name}`} name={name} price={price} image={image} />
       </div>
+    </li>
+  );
+}
 
-      {qty === 0 ? (
-        <button
-          onClick={() => addItem({ key, name, price, image })}
-          aria-label={`${t.cart.addToCart}: ${name}`}
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold-400 text-white shadow-md transition-transform active:scale-95 hover:bg-gold-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300"
-        >
-          <Plus className="h-5 w-5" />
-        </button>
-      ) : (
-        <div className="flex shrink-0 items-center gap-1 rounded-full bg-gold-400/15 p-1 ring-1 ring-gold-400/40">
-          <button
-            onClick={() => setQuantity(key, qty - 1)}
-            aria-label={`${name}: −`}
-            className="grid h-9 w-9 place-items-center rounded-full bg-gold-400 text-white active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-300"
-          >
-            <Minus className="h-4 w-4" />
-          </button>
-          <span className="w-6 text-center text-sm font-bold tabular-nums" aria-live="polite">
-            {qty}
-          </span>
-          <button
-            onClick={() => setQuantity(key, qty + 1)}
-            aria-label={`${name}: +`}
-            className="grid h-9 w-9 place-items-center rounded-full bg-gold-400 text-white active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-300"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
-      )}
+function ListRow({
+  categoryId, name, price, image,
+}: { categoryId: string; name: string; price: number; image: string }) {
+  return (
+    <li className="flex items-center gap-3 py-3">
+      <div className="flex min-w-0 flex-1 items-baseline gap-2">
+        <span className="text-[15px] font-semibold leading-snug">{name}</span>
+        <span aria-hidden="true" className="min-w-4 flex-1 translate-y-[-3px] border-b-2 border-dotted border-plum-300" />
+        <span className="shrink-0 font-bold text-plum-600">
+          <bdi>{price} DH</bdi>
+        </span>
+      </div>
+      <Qty itemKey={`${categoryId}__${name}`} name={name} price={price} image={image} />
     </li>
   );
 }
@@ -117,12 +124,16 @@ export default function MenuList({ query }: { query: string }) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const splitName = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length < 2) return [name, ""];
+    const half = Math.ceil(parts.length / 2);
+    return [parts.slice(0, half).join(" "), parts.slice(half).join(" ")];
+  };
+
   return (
     <>
-      <nav
-        aria-label="Categories"
-        className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0a10]/90 backdrop-blur"
-      >
+      <nav aria-label="Categories" className="sticky top-0 z-40 border-b border-plum-100 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-2xl gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {visible.map((c) => (
             <button
@@ -132,10 +143,10 @@ export default function MenuList({ query }: { query: string }) {
               }}
               onClick={() => goTo(c.id)}
               aria-current={active === c.id}
-              className={`min-h-11 shrink-0 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300 ${
+              className={`min-h-11 shrink-0 rounded-full px-4 text-sm font-semibold transition-colors ${
                 active === c.id
-                  ? "border-gold-400 bg-gold-400 text-white"
-                  : "border-white/15 text-white/75 hover:border-gold-400/60 hover:text-white"
+                  ? "bg-plum-600 text-white"
+                  : "bg-plum-50 text-plum-700 ring-1 ring-plum-200 hover:bg-plum-100"
               }`}
             >
               {c.name}
@@ -144,36 +155,57 @@ export default function MenuList({ query }: { query: string }) {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-2xl px-5 pb-32">
+      <main className="mx-auto max-w-2xl px-4 pb-32">
         {visible.length === 0 && (
-          <p className="py-20 text-center text-white/60">{t.menu.noResults}</p>
+          <p className="py-20 text-center text-plum-700/70">{t.menu.noResults}</p>
         )}
 
-        {visible.map((c) => (
-          <section key={c.id} id={c.id} className="scroll-mt-16 pt-8">
-            <div className="flex items-baseline justify-between gap-3 border-b-2 border-gold-400/60 pb-2">
-              <h2 className="font-display text-2xl font-bold">{c.name}</h2>
-              <span className="text-xs text-white/50">{t.qr.items(c.products.length)}</span>
-            </div>
-            <ul className="divide-y divide-white/10">
-              {c.products.map((p) => (
-                <ItemRow
-                  key={p.name}
-                  categoryId={c.id}
-                  name={p.name}
-                  price={p.price}
-                  image={p.image}
-                  onOpenPhoto={(image, name) => setLightbox({ image, name })}
-                />
-              ))}
-            </ul>
-          </section>
-        ))}
+        {visible.map((c) => {
+          const [first, second] = splitName(c.name);
+          const withPhoto = c.products.filter((p) => p.hasPhoto);
+          const noPhoto = c.products.filter((p) => !p.hasPhoto);
+          return (
+            <section key={c.id} id={c.id} className="scroll-mt-16 pt-8">
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <h2 className="font-display text-[1.75rem] uppercase leading-none">
+                  <span className="text-plum-900">{first}</span>{" "}
+                  <span className="text-plum-500">{second}</span>
+                </h2>
+                <span className="shrink-0 rounded-full bg-plum-100 px-3 py-1 text-xs font-semibold text-plum-700">
+                  {t.menu.items(c.products.length)}
+                </span>
+              </div>
+
+              {withPhoto.length > 0 && (
+                <ul className="grid grid-cols-2 gap-3">
+                  {withPhoto.map((p) => (
+                    <PhotoCard
+                      key={p.name}
+                      categoryId={c.id}
+                      name={p.name}
+                      price={p.price}
+                      image={p.image}
+                      onOpenPhoto={(image, name) => setLightbox({ image, name })}
+                    />
+                  ))}
+                </ul>
+              )}
+
+              {noPhoto.length > 0 && (
+                <ul className={`rounded-3xl bg-white px-4 ring-1 ring-plum-100 ${withPhoto.length ? "mt-3" : ""} divide-y divide-plum-100`}>
+                  {noPhoto.map((p) => (
+                    <ListRow key={p.name} categoryId={c.id} name={p.name} price={p.price} image={p.image} />
+                  ))}
+                </ul>
+              )}
+            </section>
+          );
+        })}
       </main>
 
       {lightbox && (
         <div
-          className="fixed inset-0 z-[80] grid place-items-center bg-black/90 p-4 backdrop-blur-sm sb-fade-in"
+          className="fixed inset-0 z-[80] grid place-items-center bg-plum-900/90 p-4 backdrop-blur-sm sb-fade-in"
           onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
@@ -182,20 +214,13 @@ export default function MenuList({ query }: { query: string }) {
           <button
             onClick={() => setLightbox(null)}
             aria-label="Close photo"
-            className="absolute end-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            className="absolute end-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/20 text-white hover:bg-white/30"
           >
             <X className="h-5 w-5" />
           </button>
-          <div
-            className="flex max-h-[90vh] max-w-xl flex-col items-center gap-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={lightbox.image}
-              alt={lightbox.name}
-              className="max-h-[75vh] w-auto rounded-2xl object-contain shadow-2xl"
-            />
-            <p className="font-display text-lg font-semibold text-white">{lightbox.name}</p>
+          <div className="flex max-h-[90vh] max-w-xl flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            <img src={lightbox.image} alt={lightbox.name} className="max-h-[75vh] w-auto rounded-2xl object-contain shadow-2xl" />
+            <p className="font-display text-lg text-white">{lightbox.name}</p>
           </div>
         </div>
       )}
