@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@fontsource/archivo-black": "^5.3.0",
@@ -22,6 +23,7 @@
     "@types/react": "~19.2.18",
     "@types/react-dom": "~19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vite": "^8.2.0"
