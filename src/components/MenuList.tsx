@@ -51,7 +51,7 @@ function PhotoCard({
   categoryId, name, price, image, onOpenPhoto,
 }: { categoryId: string; name: string; price: number; image: string; onOpenPhoto: OpenPhoto }) {
   return (
-    <li className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_8px_24px_-12px_rgba(87,26,134,0.35)] ring-1 ring-plum-100">
+    <li className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] ring-1 ring-plum-100">
       <button
         onClick={() => onOpenPhoto(image, name)}
         aria-label={`${name}: view photo`}

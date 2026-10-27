@@ -15,7 +15,7 @@ export default function CartBar() {
     >
       <button
         onClick={openCart}
-        className="mx-auto flex min-h-14 w-full max-w-2xl items-center justify-between gap-3 rounded-full bg-plum-600 px-5 text-white shadow-[0_14px_40px_-10px_rgba(87,26,134,0.8)] transition-transform active:scale-[0.98] hover:bg-plum-700"
+        className="mx-auto flex min-h-14 w-full max-w-2xl items-center justify-between gap-3 rounded-full bg-plum-600 px-5 text-white shadow-[0_14px_40px_-10px_rgba(0,0,0,0.8)] transition-transform active:scale-[0.98] hover:bg-plum-700"
       >
         <span className="flex items-center gap-3 font-semibold">
           <span className="relative grid h-9 w-9 place-items-center rounded-full bg-white/20">

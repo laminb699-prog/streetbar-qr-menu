@@ -4,16 +4,16 @@
   --font-display: 'Archivo Black', 'Arial Black', sans-serif;
   --font-body: 'Outfit', 'Cairo', system-ui, sans-serif;
 
-  --color-plum-50: #faf5ff;
-  --color-plum-100: #f1e4fc;
-  --color-plum-200: #e3c8f8;
-  --color-plum-300: #c99af0;
-  --color-plum-400: #a85fe0;
-  --color-plum-500: #8a34c8;
-  --color-plum-600: #6d21a7;
-  --color-plum-700: #571a86;
-  --color-plum-800: #43136a;
-  --color-plum-900: #2d0d47;
+  --color-plum-50: #fafafa;
+  --color-plum-100: #f0f0f0;
+  --color-plum-200: #e0e0e0;
+  --color-plum-300: #bdbdbd;
+  --color-plum-400: #8a8a8a;
+  --color-plum-500: #4a4a4a;
+  --color-plum-600: #111111;
+  --color-plum-700: #000000;
+  --color-plum-800: #1a1a1a;
+  --color-plum-900: #0a0a0a;
 }
 
 @layer base {
@@ -23,12 +23,12 @@
   }
   body {
     font-family: var(--font-body);
-    background: #fbf8ff;
-    color: #2d0d47;
+    background: #fafafa;
+    color: #0a0a0a;
     -webkit-tap-highlight-color: transparent;
   }
   :focus-visible {
-    outline: 3px solid #a85fe0;
+    outline: 3px solid #000;
     outline-offset: 2px;
   }
 }
