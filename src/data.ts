@@ -239,6 +239,22 @@ export const categories: Category[] = [
     ),
   },
   {
+    id: "can-cake",
+    name: "Can Cake",
+    tagline: "Layered dessert in a can, 250 ml",
+    image: resolveCategoryImage("can-cake"),
+    products: products(
+      [
+        ["Can Cake Framboise (250 ml)", 23, "can-cake__framboise.jpg"],
+        ["Can Cake Mango (250 ml)", 23, "can-cake__mango.jpg"],
+        ["Can Cake Oreo (250 ml)", 23, "can-cake__oreo.jpg"],
+        ["Can Cake Lotus (250 ml)", 23, "can-cake__lotus.jpg"],
+        ["Can Cake Pistache (250 ml)", 23, "can-cake__pistache.jpg"],
+      ],
+      resolveCategoryImage("can-cake")
+    ),
+  },
+  {
     id: "extras",
     name: "Extras",
     tagline: "Add scoops and toppings to your order",
