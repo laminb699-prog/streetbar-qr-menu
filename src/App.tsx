@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import MenuHeader from "./components/MenuHeader";
 import MenuList from "./components/MenuList";
 import CartBar from "./components/CartBar";
@@ -13,6 +14,7 @@ export default function App() {
       <MenuList query={query} />
       <CartBar />
       <Cart />
+      <SpeedInsights />
     </div>
   );
 }
